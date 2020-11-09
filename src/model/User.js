@@ -63,7 +63,9 @@ export class User extends Model {
 
         return new Promise((s, f)=>{
 
-            User.getRef().doc(this.key).collection('contacts').onSnapshot(docs => {
+            User.getRef().doc(this.key)
+            .collection('contacts')
+            .onSnapshot(docs => {
 
                 let contacts = [];
 
@@ -75,9 +77,11 @@ export class User extends Model {
 
                 });
 
+                this.trigger('contactschange', contacts);
+
+                
                 s(docs);
 
-                this.trigger('contactschange', contacts);
 
             });
 
