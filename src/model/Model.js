@@ -7,6 +7,8 @@ export class Model extends ClassEvent{
       super();
       this._data = {};
 
+      
+
    }
 
    fromJSON(json){

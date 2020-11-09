@@ -1,75 +1,88 @@
 import {Firebase} from './../utils/Firebase.js';
 import { Model } from './Model.js';
 
+export class User extends Model {
 
+    get name() { return this._data.name; }
+    set name(value) { this._data.name = value; }
 
-export class User extends Model{
+    get email() { return this._data.email; }
+    set email(value) { this._data.email = value; }
 
-   constructor(id){
+    get photo() { return this._data.photo; }
+    set photo(value) { this._data.photo = value; }
 
-      super();
+    get chatId() { return this._data.chatId; }
+    set chatId(value) { this._data.chatId = value; }
 
-    
-      if(id) this.getById(id);
+    static getRef(){
+        return Firebase.db().collection('users');
+    }
 
-   }
+    constructor(key){
+        
+        super();
 
-   get name(){ return this._data.name;}
-   set name(value){ this._data.name = value;}
+        this.key = key;
 
-   get email(){ return this._data.email;}
-   set email(value){ this._data.email = value;}
+        this.getByKey();
 
-   get photo(){ return this._data.photo;}
-   set photo(value){ this._data = value;}
+    }
 
+    getByKey(){
 
-   getById(id){
+        return new Promise((s, f)=>{
 
-      return new Promise((s, f) => {
+            User.getRef().doc(this.key).onSnapshot(doc => {
 
-         User.findByEmail(id).onSnapshot(doc =>{
-            this.fromJSON(doc.data());
+                this.doc = doc;
 
-            s(doc);
+                this.fromJSON(doc.data());
 
-         });
+                s(doc);
 
-      });
+            });
 
-   }
+        });        
 
-   save() {
+    }
 
-        console.log('dentro de save find', User.findByEmail(this.email));
-        console.log('dentro de save json', this.toJSON());
+    save(){
 
-        console.log('email', this.email)
+        return User.getRef().doc(this.key).set(this.toJSON());
 
+    }
 
-      return User.findByEmail(this.email).set(this.toJSON());
+    addContact(contact){
 
-   }
+        return User.getRef().doc(this.key).collection('contacts').doc(btoa(contact.email)).set(contact.toJSON());
 
-   static getRef(){
-      return Firebase.db().collection('/users');
+    }
 
-   }
+    getContacts(){
 
-   static findByEmail(email){
+        return new Promise((s, f)=>{
 
-      return User.getRef().doc(email);
-   }
+            User.getRef().doc(this.key).collection('contacts').onSnapshot(docs => {
 
-   addContact(contact){
+                let contacts = [];
 
-       return User.getRef().doc(this.email).collection('contacts').doc(btoa(contact.email)).set(contact.toJSON());
+                docs.forEach(doc=>{
 
+                    let data = doc.data();
+                    data._key = doc.key;
+                    contacts.push(data);
 
-   }
+                });
 
+                s(docs);
+
+                this.trigger('contactschange', contacts);
+
+            });
+
+        });        
+
+    }
 
 }
-
-
-

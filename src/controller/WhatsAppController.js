@@ -24,6 +24,8 @@ export class WhatsAppController {
       this._firebase.initAuth().then(response=> { 
 
         this._user = new User(response.user.email);
+        
+        console.log('dentro de initAuth',response.user.email)
 
          this._user.on('datachange', data => {
 
@@ -244,7 +246,7 @@ export class WhatsAppController {
                this._user.addContact(contact).then(() => {
 
                   this.el.btnClosePanelAddContact.click();
-                  console.inf('Contado adicionado')
+                  console.info('Contado adicionado');
                });
                
 
@@ -256,7 +258,7 @@ export class WhatsAppController {
 
          });
 
-         this._user.addContact();
+         
 
       });
 
