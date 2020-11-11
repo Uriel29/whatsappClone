@@ -78,9 +78,9 @@ export class WhatsAppController {
 
             this.el.contactsMessagesList.innerHTML = '';
 
+
             docs.forEach(doc => {
 
-               
 
         let contact = doc;
 
@@ -149,6 +149,26 @@ export class WhatsAppController {
                     img.show();
 
                 }
+
+            div.on('click', e => {
+
+                this.el.activeName.innerHTML = contact.name;
+                this.el.activeStatus.innerHTML = contact.status;
+                if(contact.photo){
+                    let img2 = this.el.activePhoto;
+                    img2.src = contact.photo;
+                    console.log("contact.photo",contact.photo);
+                    img2.show();
+                }
+
+                this.el.home.hide();
+
+                this.el.main.css({
+                    display:'flex'
+                });
+
+
+            })  ;  
        
                 
          this.el.contactsMessagesList.appendChild(div);
